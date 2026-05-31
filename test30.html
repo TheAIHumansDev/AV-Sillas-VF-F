@@ -643,6 +643,24 @@
         .info-badge-body { flex:1; }
         .info-badge-label { font-size:9px; color:#93c5fd; font-family:'JetBrains Mono',monospace; letter-spacing:1px; text-transform:uppercase; margin-bottom:2px; }
         .info-badge-val { font-size:13px; font-weight:700; color:#fff; }
+
+        /* MODO T3 */
+        .modo-selector { display:none; margin-top:14px; }
+        .modo-selector.show { display:block; animation:slideDown 0.3s ease; }
+        .modo-title { font-size:11px; font-weight:700; color:#93c5fd; font-family:'JetBrains Mono',monospace; letter-spacing:2px; text-transform:uppercase; text-align:center; margin-bottom:10px; }
+        .modo-group { display:flex; gap:10px; }
+        .modo-btn { flex:1; padding:14px 10px; border-radius:12px; cursor:pointer; font-family:'Syne',sans-serif; transition:all 0.22s; text-align:center; border:1.5px solid; }
+        .modo-btn .mb-icon { font-size:26px; display:block; margin-bottom:6px; }
+        .modo-btn .mb-label { font-size:13px; font-weight:800; display:block; }
+        .modo-btn .mb-sub { font-size:9px; display:block; margin-top:3px; font-family:'JetBrains Mono',monospace; }
+        .modo-btn-registro { background:rgba(59,130,246,0.1); border-color:rgba(59,130,246,0.35); color:#93c5fd; }
+        .modo-btn-registro:hover { background:rgba(59,130,246,0.2); }
+        .modo-btn-registro .mb-label { color:#93c5fd; }
+        .modo-btn-registro .mb-sub { color:rgba(147,197,253,0.6); }
+        .modo-btn-servicio { background:rgba(232,0,29,0.1); border-color:rgba(232,0,29,0.35); color:var(--red3); }
+        .modo-btn-servicio:hover { background:rgba(232,0,29,0.18); }
+        .modo-btn-servicio .mb-label { color:var(--red3); }
+        .modo-btn-servicio .mb-sub { color:rgba(255,100,100,0.6); }
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
     </style>
 
@@ -768,6 +786,10 @@
                                 <label>🎫 PNR <span style="color:var(--red3);font-size:11px;">*</span></label>
                                 <input type="text" id="pnrNumber" class="input-field" placeholder="Ej: ABC123" style="text-transform:uppercase;" maxlength="8" oninput="checkFormReady()">
                             </div>
+                            <div class="form-group">
+                                <label>💺 # de Silla <span style="color:var(--red3);font-size:11px;">*</span></label>
+                                <input type="text" id="seatNumber" class="input-field" placeholder="Ej: 12A, 04C…" style="text-transform:uppercase;" maxlength="4" oninput="checkFormReady()">
+                            </div>
                             <div class="form-section-divider"><span>♿ Clasificación WCH</span></div>
                             <div class="form-group">
                                 <label>🏷️ Tipo WCH <span style="color:var(--red3);font-size:11px;">*</span></label>
@@ -811,6 +833,7 @@
                             <div id="relevoDataSummary" style="display:none;">
                                 <div class="relevo-data-card">
                                     <div class="relevo-data-row"><span>🎫 PNR</span><strong id="relevoSeat">–</strong></div>
+                                    <div class="relevo-data-row"><span>💺 Silla</span><strong id="relevoSilla">–</strong></div>
                                     <div class="relevo-data-row"><span>♿ WCH</span><strong id="relevoWCH">–</strong></div>
                                     <div class="relevo-data-row"><span>🛫 Origen</span><strong id="relevoOrigen">–</strong></div>
                                     <div class="relevo-data-row"><span>🛬 Destino</span><strong id="relevoDestino">–</strong></div>
@@ -844,6 +867,7 @@
                             <div id="llegadaDataSummary" style="display:none;">
                                 <div class="relevo-data-card">
                                     <div class="relevo-data-row"><span>🎫 PNR</span><strong id="llegadaSeat">–</strong></div>
+                                    <div class="relevo-data-row"><span>💺 Silla</span><strong id="llegadaSilla">–</strong></div>
                                     <div class="relevo-data-row"><span>♿ WCH</span><strong id="llegadaWCH">–</strong></div>
                                     <div class="relevo-data-row"><span>📄 Docs</span><strong id="llegadaDocs">–</strong></div>
                                     <div class="relevo-data-row"><span>💓 Marcapasos</span><strong id="llegadaPace">–</strong></div>
@@ -859,6 +883,10 @@
                                 <div class="form-group">
                                     <label>🎫 PNR <span style="color:var(--red3);font-size:11px;">*</span></label>
                                     <input type="text" id="pnrNumberT3" class="input-field" placeholder="Ej: ABC123" style="text-transform:uppercase;" maxlength="8" oninput="checkFormReady()">
+                                </div>
+                                <div class="form-group">
+                                    <label>💺 # de Silla <span style="color:var(--red3);font-size:11px;">*</span></label>
+                                    <input type="text" id="seatNumberT3" class="input-field" placeholder="Ej: 12A, 04C…" style="text-transform:uppercase;" maxlength="4" oninput="checkFormReady()">
                                 </div>
                                 <div class="form-section-divider"><span>♿ Clasificación WCH</span></div>
                                 <div class="form-group">
@@ -910,7 +938,24 @@
                             </div>
                         </div>
 
+                        <!-- T1/T2 button (hidden in T3) -->
                         <button class="btn-primary" onclick="submitFlightInfo()" style="margin-top:10px;" id="btnGuardarPasajero" disabled>💾 Guardar Pasajero →</button>
+                        <!-- T3 MODE SELECTOR (shown after form is valid in T3) -->
+                        <div class="modo-selector" id="modoSelectorT3">
+                            <div class="modo-title">⚡ ¿Qué desea hacer?</div>
+                            <div class="modo-group">
+                                <button type="button" class="modo-btn modo-btn-registro" onclick="submitT3('registro')">
+                                    <span class="mb-icon">📋</span>
+                                    <span class="mb-label">Solo Registrar</span>
+                                    <span class="mb-sub">Guarda pasajero sin iniciar servicio</span>
+                                </button>
+                                <button type="button" class="modo-btn modo-btn-servicio" onclick="submitT3('servicio')">
+                                    <span class="mb-icon">▶️</span>
+                                    <span class="mb-label">Iniciar Servicio</span>
+                                    <span class="mb-sub">Flujo completo con checkpoints</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1106,6 +1151,7 @@
                     <div class="sum-head">👤 Pasajero</div>
                     <div class="sum-row"><span class="sum-label">Nombre</span><span class="sum-val" id="sumPasajero">–</span></div>
                     <div class="sum-row"><span class="sum-label">PNR</span><span class="sum-val" id="sumPNR">–</span></div>
+                    <div class="sum-row"><span class="sum-label">💺 Silla</span><span class="sum-val" id="sumSilla">–</span></div>
                     <div class="sum-row" id="sumDestRow" style="display:none;"><span class="sum-label">Destino</span><span class="sum-val" id="sumDest">–</span></div>
                     <div class="sum-row"><span class="sum-label">Documentos</span><span class="sum-val" id="sumDocs">–</span></div>
                     <div class="sum-row"><span class="sum-label">Marcapasos</span><span class="sum-val" id="sumPace">–</span></div>
@@ -1147,7 +1193,7 @@
     let timestamps={}, checkpointProgress=0;
     let incidentText='', incidentPhotoB64='';
     let isResume=false, resumeRowId=null;
-    let passengerName='', pnrNumber='', wchType='';
+    let passengerName='', pnrNumber='', seatNumber='', wchType='';
     let hasDocs='', hasPacemaker='', canWalk='';
     let tramoType='';
     let origenVal='SAL', destinoVal='';
@@ -1233,6 +1279,8 @@
         document.getElementById('tramoLlegadaBlock').style.display = isT3() ? 'block' : 'none';
         resetPassengerFields();
         document.getElementById('btnGuardarPasajero').disabled=true;
+        document.getElementById('modoSelectorT3').classList.remove('show');
+        document.getElementById('btnGuardarPasajero').style.display = isT3() ? 'none' : '';
         if(isT2()) tryFetchRelevoPassengers();
         checkFormReady();
     }
@@ -1250,7 +1298,7 @@
         const dSAL=document.getElementById('destinoSAL_T3'); if(dSAL) dSAL.className='destino-btn';
         const dCNX=document.getElementById('destinoCNX_T3'); if(dCNX) dCNX.className='destino-btn';
         const cnxBlock=document.getElementById('conexionFlightBlock'); if(cnxBlock) cnxBlock.classList.remove('show');
-        ['passengerName','pnrNumber','destinoT1','origenT3','passengerNameT3','pnrNumberT3','conexionFlight'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+        ['passengerName','pnrNumber','destinoT1','origenT3','passengerNameT3','pnrNumberT3','conexionFlight','seatNumber','seatNumberT3'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; }); seatNumber='';
         const lmb=document.getElementById('llegadaManualBlock'); if(lmb) lmb.style.display='block';
     }
 
@@ -1309,6 +1357,7 @@
         wchType=p.wchType||''; hasDocs=p.hasDocs||''; hasPacemaker=p.hasPacemaker||''; canWalk=p.canWalk||'';
         origenVal=p.origen||'SAL'; destinoVal=p.destino||'';
         document.getElementById('relevoSeat').textContent=pnrNumber||'–';
+        document.getElementById('relevoSilla').textContent=p.seatNumber||p.silla||'–'; seatNumber=p.seatNumber||p.silla||'';
         document.getElementById('relevoWCH').textContent=wchType||'–';
         document.getElementById('relevoOrigen').textContent=origenVal||'–';
         document.getElementById('relevoDestino').textContent=destinoVal||'–';
@@ -1362,6 +1411,7 @@
         passengerName=p.nombre||''; pnrNumber=p.pnrNumber||'';
         wchType=p.wchType||''; hasDocs=p.hasDocs||''; hasPacemaker=p.hasPacemaker||''; canWalk=p.canWalk||'';
         document.getElementById('llegadaSeat').textContent=pnrNumber||'–';
+        document.getElementById('llegadaSilla').textContent=p.seatNumber||p.silla||'–'; seatNumber=p.seatNumber||p.silla||'';
         document.getElementById('llegadaWCH').textContent=wchType||'–';
         document.getElementById('llegadaDocs').textContent=hasDocs==='si'?'✅ Sí':'❌ No';
         document.getElementById('llegadaPace').textContent=hasPacemaker==='si'?'⚠️ Sí':'✅ No';
@@ -1420,7 +1470,8 @@
             const pName=document.getElementById('passengerName')?.value.trim();
             const pnr=document.getElementById('pnrNumber')?.value.trim();
             const dest=document.getElementById('destinoT1')?.value.trim();
-            ready=!!(airline&&flight&&pName&&pnr&&dest&&wchType&&hasDocs&&hasPacemaker&&canWalk);
+            const seat=document.getElementById('seatNumber')?.value.trim();
+            ready=!!(airline&&flight&&pName&&pnr&&dest&&seat&&wchType&&hasDocs&&hasPacemaker&&canWalk);
         } else if(isT2()){
             ready=!!(selectedRelevoId);
         } else if(isT3()){
@@ -1429,11 +1480,30 @@
             else {
                 const pName=document.getElementById('passengerNameT3')?.value.trim();
                 const pnr=document.getElementById('pnrNumberT3')?.value.trim();
+                const seatT3=document.getElementById('seatNumberT3')?.value.trim();
                 const cnxOk=destinoType==='SAL'||(destinoType==='CNX'&&document.getElementById('conexionFlight')?.value.trim());
-                ready=!!(airline&&flight&&origen&&pName&&pnr&&wchType&&hasDocs&&hasPacemaker&&canWalk&&cnxOk);
+                ready=!!(airline&&flight&&origen&&pName&&pnr&&seatT3&&wchType&&hasDocs&&hasPacemaker&&canWalk&&cnxOk);
             }
         }
-        const btn=document.getElementById('btnGuardarPasajero'); if(btn) btn.disabled=!ready;
+        const btn=document.getElementById('btnGuardarPasajero');
+        const modo=document.getElementById('modoSelectorT3');
+        if(isT3()){
+            if(btn) btn.style.display='none';
+            if(modo) modo.classList.toggle('show', ready);
+        } else {
+            if(btn){ btn.style.display=''; btn.disabled=!ready; }
+            if(modo) modo.classList.remove('show');
+        }
+    }
+
+    /* ═══════════════════════════════════════
+       T3 MODE HANDLERS
+    ═══════════════════════════════════════ */
+    let t3Mode = 'servicio'; // 'registro' | 'servicio'
+
+    function submitT3(mode){
+        t3Mode = mode;
+        submitFlightInfo();
     }
 
     /* ═══════════════════════════════════════
@@ -1457,6 +1527,7 @@
             if(!hasDocs){ showToast('Indique si posee documentos','error'); return; }
             if(!hasPacemaker){ showToast('Indique si posee marcapasos','error'); return; }
             if(!canWalk){ showToast('Indique si puede caminar','error'); return; }
+            seatNumber=document.getElementById('seatNumber').value.trim().toUpperCase();
             passengerName=pName; pnrNumber=pnr.toUpperCase(); origenVal='SAL'; destinoVal=dest;
 
         } else if(isT2()){
@@ -1480,6 +1551,7 @@
                     conexionFlight=document.getElementById('conexionFlight').value.trim();
                     if(!conexionFlight){ showToast('Ingrese el vuelo de conexión','error'); return; }
                 }
+                seatNumber=document.getElementById('seatNumberT3').value.trim().toUpperCase();
                 passengerName=pName; pnrNumber=pnr.toUpperCase();
             }
         }
@@ -1490,8 +1562,14 @@
         showSending('Guardando pasajero…');
         sendToSheet(0,'Vuelo: '+airline+' '+flight,ts,()=>{
             hideSending(); showToast('✅ Pasajero guardado');
-            activateFlightSections(); renderTimeline(); updateProgress();
-            scrollToEl('sectionTimeline');
+            if(isT3()&&t3Mode==='registro'){
+                // Solo registro — ir directo a completion
+                activateFlightSections();
+                showCompletionScreen();
+            } else {
+                activateFlightSections(); renderTimeline(); updateProgress();
+                scrollToEl('sectionTimeline');
+            }
         });
     }
 
@@ -1686,6 +1764,7 @@
         document.getElementById('sumInspector').textContent=currentUser.username;
         document.getElementById('sumPasajero').textContent=passengerName;
         document.getElementById('sumPNR').textContent=pnrNumber||'–';
+        document.getElementById('sumSilla').textContent=seatNumber||'–';
         document.getElementById('sumDocs').textContent=hasDocs==='si'?'✅ Sí':'❌ No';
         document.getElementById('sumPace').textContent=hasPacemaker==='si'?'⚠️ Sí':'✅ No';
         document.getElementById('sumWalk').textContent=canWalk==='si'?'✅ Sí':'❌ No';
@@ -1733,7 +1812,7 @@
         stops=[]; activeStop=null; totalStopMs=0;
         checkpointProgress=0; timestamps={}; incidentText=''; incidentPhotoB64='';
         reportId=''; flightNum=''; serviceType=''; airlineCode=''; isResume=false; resumeRowId=null;
-        tramoType=''; passengerName=''; pnrNumber=''; wchType=''; hasDocs=''; hasPacemaker=''; canWalk='';
+        tramoType=''; passengerName=''; pnrNumber=''; seatNumber=''; wchType=''; hasDocs=''; hasPacemaker=''; canWalk=''; t3Mode='servicio';
         origenVal='SAL'; destinoVal=''; destinoType=''; conexionFlight='';
         selectedRelevoId=''; selectedLlegadaId=''; relevoPassengers=[]; llegadaPassengers=[];
         ['airlineSelect','flightNumber'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
@@ -1762,6 +1841,8 @@
         const oRow=document.getElementById('sumOrigenRow'); if(oRow) oRow.style.display='none';
         const dRow=document.getElementById('sumDestinoRow'); if(dRow) dRow.style.display='none';
         document.getElementById('btnGuardarPasajero').disabled=true;
+        document.getElementById('modoSelectorT3').classList.remove('show');
+        document.getElementById('btnGuardarPasajero').style.display='';
         renderTimeline(); updateProgress(); scrollTop();
     }
 
@@ -1800,6 +1881,7 @@
             url+='&tramoType='+encodeURIComponent(tramoType);
             url+='&passengerName='+encodeURIComponent(passengerName);
             url+='&pnrNumber='+encodeURIComponent(pnrNumber);
+            url+='&seatNumber='+encodeURIComponent(seatNumber);
             url+='&wchType='+encodeURIComponent(wchType);
             url+='&hasDocs='+encodeURIComponent(hasDocs);
             url+='&hasPacemaker='+encodeURIComponent(hasPacemaker);
