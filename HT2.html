@@ -837,21 +837,6 @@ let resumeBtn = estadoReal !== 'Completado' ? `
             document.getElementById('statToday').textContent   = todayCount;
         }
 
-        // ── DUPLICATE CHECK ──
-        function checkDuplicates() {
-            const inProgress = allReports.filter(r => r.estado === 'En Proceso');
-            const banner     = document.getElementById('duplicateBanner');
-            if (inProgress.length > 0) {
-                banner.classList.add('visible');
-                const list = inProgress
-                    .map(r => `${r.aerolinea || ''} ${r.vuelo || ''}`.trim() || r.numeroReporte || 'S/N')
-                    .join(', ');
-                document.getElementById('duplicateMsg').textContent =
-                    `⚠️ Tienes ${inProgress.length} reporte(s) sin completar: ${list}. ¿Deseas retomarlo?`;
-            } else {
-                banner.classList.remove('visible');
-            }
-        }
 
         function toggleCard(el) {
             // Evitar que el click en el botón "Retomar" expanda/contraiga la card
