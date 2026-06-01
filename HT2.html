@@ -699,9 +699,6 @@ const chipClass   = 'chip-completado';
                 r.descripcionIncidente !== 'Sin incidentes reportados' &&
                 r.descripcionIncidente !== '';
 
-// BUSCA esto (la línea del resumeBtn original):
-const resumeBtn = estado !== 'Completado' ? `...` : '';
-
 // CÁMBIALA por (usa estadoReal, y let en vez de const):
 let resumeBtn = estadoReal !== 'Completado' ? `
     <button class="btn-resume" data-report-idx="${idx}" onclick="resumeFromCard(this)">
