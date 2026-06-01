@@ -491,9 +491,10 @@
                 <div class="form-section-divider"><span>🗺️ Ruta del Vuelo</span></div>
                 <div class="input-row">
                     <div class="form-group">
-                        <label>🛬 Origen <span style="color:var(--muted);font-size:10px;">(LLEGADA)</span></label>
+                        <label>🛬 Origen <span style="color:var(--muted);font-size:10px;"></span></label>
                         <select id="origenVuelo" class="input-field" onchange="checkFormReady();">
                             <option value="">-- De dónde viene --</option>
+                            <option value="SAL">SAL · El Salvador</option>
                             <option value="BOG">BOG · Bogotá</option>
                             <option value="MDE">MDE · Medellín</option>
                             <option value="CLO">CLO · Cali</option>
@@ -505,8 +506,7 @@
                             <option value="MEX">MEX · Ciudad de México</option>
                             <option value="LIM">LIM · Lima</option>
                             <option value="GUA">GUA · Guatemala</option>
-                            <option value="PTY">PTY · Panamá</option>
-                            <option value="SAL">SAL · El Salvador</option>
+                            <option value="PTY">PTY · Panamá</option>   
                             <option value="SJO">SJO · San José CR</option>
                             <option value="CUN">CUN · Cancún</option>
                             <option value="YYZ">YYZ · Toronto</option>
@@ -518,7 +518,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>🛫 Destino <span style="color:var(--muted);font-size:10px;">(SALIDA)</span></label>
+                        <label>🛫 Destino <span style="color:var(--muted);font-size:10px;"></span></label>
                         <select id="destinoVuelo" class="input-field" onchange="checkFormReady();">
                             <option value="">-- A dónde va --</option>
                             <option value="BOG">BOG · Bogotá</option>
