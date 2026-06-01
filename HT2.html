@@ -682,8 +682,7 @@ const estadoReal  = r.estado || 'En Proceso';
 const estado      = 'Completado';                // forzar visual
 const statusClass = 'completado';
 const chipClass   = 'chip-completado';     
-// Nota: resumeBtn usará estadoReal para no perder el botón si lo necesitas
-const resumeBtn   = estadoReal !== 'Completado' ? `...` : '';          
+       
           
           const svcType     = getServiceType(r);
             const airline     = r.aerolinea || r.airline || '–';
@@ -700,12 +699,16 @@ const resumeBtn   = estadoReal !== 'Completado' ? `...` : '';
                 r.descripcionIncidente !== 'Sin incidentes reportados' &&
                 r.descripcionIncidente !== '';
 
-            // Botón retomar: serializar como JSON en data-attribute (evita problemas con comillas)
-            const resumeBtn = estado !== 'Completado' ? `
-                <button class="btn-resume" data-report-idx="${idx}" onclick="resumeFromCard(this)">
-                    ▶ Retomar Reporte
-                </button>` : '';
+// BUSCA esto (la línea del resumeBtn original):
+const resumeBtn = estado !== 'Completado' ? `...` : '';
 
+// CÁMBIALA por (usa estadoReal, y let en vez de const):
+let resumeBtn = estadoReal !== 'Completado' ? `
+    <button class="btn-resume" data-report-idx="${idx}" onclick="resumeFromCard(this)">
+        ▶ Retomar Reporte
+    </button>` : '';
+
+            
             const incidentHtml = tieneIncidente ? `
                 <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:10px 12px;margin-top:10px;">
                     <div style="font-size:11px;color:#fca5a5;font-weight:700;font-family:'JetBrains Mono',monospace;margin-bottom:4px;">⚠ INCIDENTE</div>
