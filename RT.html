@@ -973,7 +973,7 @@ let stops=[], activeStop=null, totalStopMs=0, stopElapsedTimer=null;
 // ════════════════════════════════════════════════════════════
 (function checkAuth(){
     const raw = sessionStorage.getItem('user');
-    if(!raw){ window.location.href='sillas.html'; return; }
+    if(!raw){ window.location.href='index.html'; return; }
     try{
         currentUser = JSON.parse(raw);
         document.getElementById('usernameDisplay').textContent = currentUser.username;
