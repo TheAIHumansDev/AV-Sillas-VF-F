@@ -2012,10 +2012,8 @@ function ocrLiveEdit(input){
 }
 
 function confirmOcrData(){
-    // Hard block — expired boarding pass cannot be used
     if(_bpExpired){
         showToast('🚫 Tarjeta expirada — no se puede iniciar el servicio', 'error');
-        // Shake the button to reinforce the block
         const btn = document.getElementById('btnConfirmOcr');
         if(btn){ btn.style.animation='bounceCheck 0.4s ease'; setTimeout(()=>{ btn.style.animation=''; }, 400); }
         return;
@@ -2023,62 +2021,81 @@ function confirmOcrData(){
     stopCountdown();
     const d = _ocrPending;
 
-    // Apply to form with flash animation
     const markFilled = (el) => {
         if(!el) return;
         el.classList.add('scan-filled');
         setTimeout(()=> el.classList.remove('scan-filled'), 3000);
     };
 
-    // Airline
+    // ══════════════════════════════════════════════════
+    // TRAMO AERONAVE: pre-llenar modal y abrirlo
+    // El flujo de guardado lo maneja saveModalPassenger() sin cambios
+    // ══════════════════════════════════════════════════
+    if(tramoType === 'aeronave-salida'){
+        cancelScan();
+
+        // Pre-llenar campos del modal con datos del OCR
+        document.getElementById('modalPaxName').value  = d.passengerName || '';
+        document.getElementById('modalPaxPNR').value   = (d.pnr         || '').toUpperCase();
+        document.getElementById('modalPaxSilla').value = (d.seatNumber   || '').toUpperCase();
+
+        // Resetear selecciones — supervisor debe confirmar estos
+        modalWchType = ''; modalDocs = ''; modalPace = ''; modalWalk = '';
+        ['mWCHR','mWCHS','mWCHC'].forEach(id => document.getElementById(id)?.classList.remove('selected'));
+        ['mDocsYes','mDocsNo','mPaceYes','mPaceNo','mWalkYes','mWalkNo'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.className = 'toggle-btn';
+        });
+
+        // Abrir modal — saveModalPassenger() se encarga del resto
+        document.getElementById('modalAddPassenger').classList.add('show');
+        setTimeout(() => document.getElementById('modalPaxName').focus(), 350);
+        showToast('🎫 Datos del pase cargados — confirme WCH y verificaciones');
+        return;
+    }
+
+    // ══════════════════════════════════════════════════
+    // TRAMOS 1 y 2: poblar campos del formulario
+    // ══════════════════════════════════════════════════
     if(d.airlineCode){
         const sel = document.getElementById('airlineSelect');
         const code = String(d.airlineCode).toUpperCase();
         if([...sel.options].some(o => o.value === code)){ sel.value = code; markFilled(sel); }
     }
-    // Flight number
     if(d.flightNumber){
         const el = document.getElementById('flightNumber');
         el.value = String(d.flightNumber).trim(); markFilled(el);
     }
-    // Origin
     if(d.origin){
         const sel = document.getElementById('origenVuelo');
         const code = String(d.origin).toUpperCase().trim();
         if([...sel.options].some(o => o.value === code)){ sel.value = code; markFilled(sel); }
     }
-    // Destination
     if(d.destination){
         const sel = document.getElementById('destinoVuelo');
         const code = String(d.destination).toUpperCase().trim();
         if([...sel.options].some(o => o.value === code)){ sel.value = code; markFilled(sel); }
     }
-    // Passenger name
     if(d.passengerName){
         const el = document.getElementById('passengerName');
         if(el){ el.value = d.passengerName; markFilled(el); }
     }
-    // PNR
     if(d.pnr){
         const el = document.getElementById('pnrNumber');
         if(el){ el.value = d.pnr.toUpperCase(); markFilled(el); }
     }
-    // Seat
     if(d.seatNumber){
         const el = document.getElementById('numeroSilla');
         if(el){ el.value = d.seatNumber.toUpperCase(); markFilled(el); }
     }
 
-    // Auto-select tramo Counter → Inspección if none selected
     if(!tramoType){
         selectTramo('counter-inspeccion');
         markFilled(document.getElementById('tramoCounter'));
     }
 
-    // Close overlay
     cancelScan();
 
-    // Show badge
     const filledCount = BP_FIELDS.filter(f => (d[f.key]||'').trim().length > 0).length;
     document.getElementById('scanBadgeText').textContent =
         `✅ Tarjeta escaneada · ${d.passengerName || 'Pasajero'} · ${filledCount} campo(s) completado(s)`;
