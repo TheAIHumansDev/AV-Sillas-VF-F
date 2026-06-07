@@ -1515,10 +1515,14 @@ function confirmDestinoFinal(){
         currentUser = JSON.parse(raw);
         document.getElementById('usernameDisplay').textContent = currentUser.username;
         document.getElementById('avatarInitial').textContent  = (currentUser.username||'?').slice(0,2).toUpperCase();
-updateApiKeyHeaderBtn();
+ updateApiKeyHeaderBtn();
         loadAeronavePassengersFromServer();
         loadSalaPassengersFromServer();
     }catch(e){ window.location.href='index.html'; }
+})();
+
+// ════════════════════════════════════════════════════════════
+//  THREE.JS BACKGROUND
 
 // ════════════════════════════════════════════════════════════
 //  THREE.JS BACKGROUND
