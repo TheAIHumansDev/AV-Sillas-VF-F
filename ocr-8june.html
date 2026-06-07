@@ -675,10 +675,113 @@
 </div>
 
 <!-- MODAL: Agregar pasajero aeronave -->
+<!-- MODAL: Agregar pasajero aeronave -->
 <div class="modal-overlay" id="modalAddPassenger">
     <div class="modal-sheet">
         <div class="modal-handle"></div>
         <div class="modal-title">✈️ Agregar Pasajero</div>
+
+        <!-- ── DATOS DEL VUELO (solo en aeronave, ocultos en otros contextos) ── -->
+        <div id="modalFlightBlock">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                <div style="flex:1;height:1px;background:rgba(59,130,246,0.15);"></div>
+                <span style="font-size:10px;font-weight:700;letter-spacing:2px;color:#64748b;font-family:'JetBrains Mono',monospace;">✈️ DATOS DEL VUELO</span>
+                <div style="flex:1;height:1px;background:rgba(59,130,246,0.15);"></div>
+            </div>
+            <div class="input-row" style="margin-bottom:10px;">
+                <div class="form-group">
+                    <label>✈️ Aerolínea <span style="color:var(--red3)">*</span></label>
+                    <select id="modalAirline" class="input-field">
+                        <option value="">-- Aerolínea --</option>
+                        <option value="AV">Avianca</option>
+                        <option value="CM">Copa Airlines</option>
+                        <option value="IB">Iberia</option>
+                        <option value="NK">Spirit</option>
+                        <option value="TS">Air Transat</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>🔢 # Vuelo <span style="color:var(--red3)">*</span></label>
+                    <input type="text" id="modalFlight" class="input-field" placeholder="Ej: 201">
+                </div>
+            </div>
+            <div class="input-row" style="margin-bottom:14px;">
+                <div class="form-group">
+                    <label>🛬 Origen <span style="color:var(--red3)">*</span></label>
+                    <select id="modalOrigen" class="input-field">
+                        <option value="">-- Origen --</option>
+                        <option value="SAL">SAL · El Salvador</option>
+                        <option value="BOS">BOS · Boston</option>
+                        <option value="DFW">DFW · Dallas/Fort Worth</option>
+                        <option value="IAH">IAH · Houston</option>
+                        <option value="IAD">IAD · Washington Dulles</option>
+                        <option value="JFK">JFK · Nueva York JFK</option>
+                        <option value="LAS">LAS · Las Vegas</option>
+                        <option value="LAX">LAX · Los Ángeles</option>
+                        <option value="MCO">MCO · Orlando</option>
+                        <option value="MIA">MIA · Miami</option>
+                        <option value="ONT">ONT · Ontario, California</option>
+                        <option value="ORD">ORD · Chicago O'Hare</option>
+                        <option value="SFO">SFO · San Francisco</option>
+                        <option value="YUL">YUL · Montreal</option>
+                        <option value="YYZ">YYZ · Toronto</option>
+                        <option value="GUA">GUA · Ciudad de Guatemala</option>
+                        <option value="MGA">MGA · Managua</option>
+                        <option value="PTY">PTY · Ciudad de Panamá</option>
+                        <option value="SAP">SAP · San Pedro Sula</option>
+                        <option value="SJO">SJO · San José</option>
+                        <option value="XPL">XPL · Comayagua (Palmerola)</option>
+                        <option value="BOG">BOG · Bogotá</option>
+                        <option value="LIM">LIM · Lima</option>
+                        <option value="MDE">MDE · Medellín</option>
+                        <option value="UIO">UIO · Quito</option>
+                        <option value="CUN">CUN · Cancún</option>
+                        <option value="MEX">MEX · Ciudad de México</option>
+                        <option value="MAD">MAD · Madrid</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>🛫 Destino <span style="color:var(--red3)">*</span></label>
+                    <select id="modalDestino" class="input-field">
+                        <option value="">-- Destino --</option>
+                        <option value="SAL">SAL · El Salvador</option>
+                        <option value="BOS">BOS · Boston</option>
+                        <option value="DFW">DFW · Dallas/Fort Worth</option>
+                        <option value="IAH">IAH · Houston</option>
+                        <option value="IAD">IAD · Washington Dulles</option>
+                        <option value="JFK">JFK · Nueva York JFK</option>
+                        <option value="LAS">LAS · Las Vegas</option>
+                        <option value="LAX">LAX · Los Ángeles</option>
+                        <option value="MCO">MCO · Orlando</option>
+                        <option value="MIA">MIA · Miami</option>
+                        <option value="ONT">ONT · Ontario, California</option>
+                        <option value="ORD">ORD · Chicago O'Hare</option>
+                        <option value="SFO">SFO · San Francisco</option>
+                        <option value="YUL">YUL · Montreal</option>
+                        <option value="YYZ">YYZ · Toronto</option>
+                        <option value="GUA">GUA · Ciudad de Guatemala</option>
+                        <option value="MGA">MGA · Managua</option>
+                        <option value="PTY">PTY · Ciudad de Panamá</option>
+                        <option value="SAP">SAP · San Pedro Sula</option>
+                        <option value="SJO">SJO · San José</option>
+                        <option value="XPL">XPL · Comayagua (Palmerola)</option>
+                        <option value="BOG">BOG · Bogotá</option>
+                        <option value="LIM">LIM · Lima</option>
+                        <option value="MDE">MDE · Medellín</option>
+                        <option value="UIO">UIO · Quito</option>
+                        <option value="CUN">CUN · Cancún</option>
+                        <option value="MEX">MEX · Ciudad de México</option>
+                        <option value="MAD">MAD · Madrid</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+                <div style="flex:1;height:1px;background:rgba(59,130,246,0.15);"></div>
+                <span style="font-size:10px;font-weight:700;letter-spacing:2px;color:#64748b;font-family:'JetBrains Mono',monospace;">👤 PASAJERO</span>
+                <div style="flex:1;height:1px;background:rgba(59,130,246,0.15);"></div>
+            </div>
+        </div>
+
         <div class="form-group">
             <label>👤 Nombre Completo <span style="color:var(--red3)">*</span></label>
             <input type="text" id="modalPaxName" class="input-field" placeholder="Nombre del pasajero">
@@ -2031,27 +2134,43 @@ function confirmOcrData(){
     // TRAMO AERONAVE: pre-llenar modal con datos del scan
     // ══════════════════════════════════════════════════
     if(tramoType === 'aeronave-salida'){
-        const nombre = d.passengerName || '';
-        const pnr    = (d.pnr || '').toUpperCase();
-        const silla  = (d.seatNumber || '').toUpperCase();
-
         cancelScan();
 
-        // Pre-fill modal fields
-        document.getElementById('modalPaxName').value  = nombre;
-        document.getElementById('modalPaxPNR').value   = pnr;
-        document.getElementById('modalPaxSilla').value = silla;
+        // Pasajero
+        document.getElementById('modalPaxName').value  = d.passengerName || '';
+        document.getElementById('modalPaxPNR').value   = (d.pnr         || '').toUpperCase();
+        document.getElementById('modalPaxSilla').value = (d.seatNumber   || '').toUpperCase();
 
-        // Reset selections — supervisor confirma estos
+        // Vuelo — mostrar bloque y pre-llenar desde OCR
+        document.getElementById('modalFlightBlock').style.display = 'block';
+
+        const airlineSel = document.getElementById('modalAirline');
+        const ocrCode    = (d.airlineCode || '').toUpperCase();
+        if(ocrCode && [...airlineSel.options].some(o => o.value === ocrCode))
+            airlineSel.value = ocrCode;
+
+        document.getElementById('modalFlight').value = (d.flightNumber || '').trim();
+
+        const origenSel = document.getElementById('modalOrigen');
+        const ocrOrigen = (d.origin || '').toUpperCase();
+        if(ocrOrigen && [...origenSel.options].some(o => o.value === ocrOrigen))
+            origenSel.value = ocrOrigen;
+
+        const destinoSel = document.getElementById('modalDestino');
+        const ocrDestino = (d.destination || '').toUpperCase();
+        if(ocrDestino && [...destinoSel.options].some(o => o.value === ocrDestino))
+            destinoSel.value = ocrDestino;
+
+        // Reset WCH/verificaciones — supervisor debe confirmar estos
         modalWchType = ''; modalDocs = ''; modalPace = ''; modalWalk = '';
         ['mWCHR','mWCHS','mWCHC'].forEach(id => document.getElementById(id)?.classList.remove('selected'));
         ['mDocsYes','mDocsNo','mPaceYes','mPaceNo','mWalkYes','mWalkNo'].forEach(id => {
-            const el = document.getElementById(id);
-            if(el) el.className = 'toggle-btn';
+            const el = document.getElementById(id); if(el) el.className = 'toggle-btn';
         });
 
         document.getElementById('modalAddPassenger').classList.add('show');
-        showToast('🎫 Datos cargados — complete WCH y verificaciones');
+        setTimeout(() => document.getElementById('modalPaxName').focus(), 350);
+        showToast('🎫 Datos del pase cargados — confirme WCH y verificaciones');
         return;
     }
 
@@ -2349,16 +2468,37 @@ function loadAeronavePassengersFromServer(){
 }
 
 function openModal(){
-    document.getElementById('modalPaxName').value = '';
-    document.getElementById('modalPaxPNR').value  = '';
-    document.getElementById('modalPaxSilla').value= '';
+    document.getElementById('modalPaxName').value  = '';
+    document.getElementById('modalPaxPNR').value   = '';
+    document.getElementById('modalPaxSilla').value = '';
     modalWchType=''; modalDocs=''; modalPace=''; modalWalk='';
-    ['mWCHR','mWCHS','mWCHC'].forEach(id=> document.getElementById(id)?.classList.remove('selected'));
-    ['mDocsYes','mDocsNo','mPaceYes','mPaceNo','mWalkYes','mWalkNo'].forEach(id=>{ const el=document.getElementById(id); if(el) el.className='toggle-btn'; });
+    ['mWCHR','mWCHS','mWCHC'].forEach(id => document.getElementById(id)?.classList.remove('selected'));
+    ['mDocsYes','mDocsNo','mPaceYes','mPaceNo','mWalkYes','mWalkNo'].forEach(id=>{
+        const el=document.getElementById(id); if(el) el.className='toggle-btn';
+    });
+
+    // Mostrar bloque de vuelo solo en tramo aeronave
+    const flightBlock = document.getElementById('modalFlightBlock');
+    if(isTramoAeronave()){
+        flightBlock.style.display = 'block';
+        // Pre-llenar con lo que ya esté en el formulario principal
+        const mainAirline = document.getElementById('airlineSelect').value;
+        const mainFlight  = document.getElementById('flightNumber').value.trim();
+        const mainOrigen  = document.getElementById('origenVuelo').value;
+        const mainDestino = document.getElementById('destinoVuelo').value;
+        document.getElementById('modalAirline').value  = mainAirline  || '';
+        document.getElementById('modalFlight').value   = mainFlight   || '';
+        document.getElementById('modalOrigen').value   = mainOrigen   || '';
+        document.getElementById('modalDestino').value  = mainDestino  || '';
+    } else {
+        flightBlock.style.display = 'none';
+    }
+
     document.getElementById('modalAddPassenger').classList.add('show');
     setTimeout(()=> document.getElementById('modalPaxName').focus(), 350);
 }
-function closeModal(){ document.getElementById('modalAddPassenger').classList.remove('show'); }
+    
+    function closeModal(){ document.getElementById('modalAddPassenger').classList.remove('show'); }
 
 function selectModalWCH(type){
     modalWchType = type;
@@ -2386,6 +2526,33 @@ function saveModalPassenger(){
     if(!modalPace)   { showToast('Indique marcapasos','error'); return; }
     if(!modalWalk)   { showToast('Indique si puede caminar','error'); return; }
 
+    // Leer datos de vuelo del modal (tramo aeronave) o del formulario principal
+    let modalAirline, modalFlightNum, modalOrigenV, modalDestinoV;
+    if(isTramoAeronave()){
+        modalAirline   = document.getElementById('modalAirline').value;
+        modalFlightNum = document.getElementById('modalFlight').value.trim();
+        modalOrigenV   = document.getElementById('modalOrigen').value;
+        modalDestinoV  = document.getElementById('modalDestino').value;
+        if(!modalAirline)   { showToast('Seleccione la aerolínea','error'); return; }
+        if(!modalFlightNum) { showToast('Ingrese el número de vuelo','error'); return; }
+        if(!modalOrigenV)   { showToast('Seleccione el origen','error'); return; }
+        if(!modalDestinoV)  { showToast('Seleccione el destino','error'); return; }
+        // Sincronizar al formulario principal para que checkFormReady() funcione
+        document.getElementById('airlineSelect').value = modalAirline;
+        document.getElementById('flightNumber').value  = modalFlightNum;
+        document.getElementById('origenVuelo').value   = modalOrigenV;
+        document.getElementById('destinoVuelo').value  = modalDestinoV;
+        airlineCode  = modalAirline;
+        flightNum    = modalFlightNum;
+        origenVuelo  = modalOrigenV;
+        destinoVuelo = modalDestinoV;
+    } else {
+        modalAirline   = document.getElementById('airlineSelect').value;
+        modalFlightNum = document.getElementById('flightNumber').value.trim();
+        modalOrigenV   = document.getElementById('origenVuelo').value;
+        modalDestinoV  = document.getElementById('destinoVuelo').value;
+    }
+
     closeModal();
     setSyncStatus('syncing','Guardando pasajero…');
     const cbName = 'savePax'+Date.now();
@@ -2399,13 +2566,29 @@ function saveModalPassenger(){
         + '&hasDocs='      + encodeURIComponent(modalDocs)
         + '&hasPacemaker=' + encodeURIComponent(modalPace)
         + '&canWalk='      + encodeURIComponent(modalWalk)
+        + '&airline='      + encodeURIComponent(modalAirline)
+        + '&flight='       + encodeURIComponent(modalFlightNum)
+        + '&origenVuelo='  + encodeURIComponent(modalOrigenV)
+        + '&destinoVuelo=' + encodeURIComponent(modalDestinoV)
         + '&callback='     + cbName;
 
     window[cbName] = function(data){
         delete window[cbName]; document.getElementById('spscr')?.remove();
         if(data?.success){
-            aeronavePassengers.push({ id:data.id, nombre, pnr, numeroSilla:silla, wchType:modalWchType, hasDocs:modalDocs, hasPacemaker:modalPace, canWalk:modalWalk, usuario:currentUser.username });
-            setSyncStatus('ok','Guardado ✓');
+            aeronavePassengers.push({
+                id: data.id, nombre, pnr,
+                numeroSilla: silla,
+                wchType:     modalWchType,
+                hasDocs:     modalDocs,
+                hasPacemaker:modalPace,
+                canWalk:     modalWalk,
+                airline:     modalAirline,
+                flight:      modalFlightNum,
+                origenVuelo: modalOrigenV,
+                destinoVuelo:modalDestinoV,
+                usuario:     currentUser.username
+            });
+            setSyncStatus('ok','Guardado ✓ · '+aeronavePassengers.length+' pasajero(s)');
             renderAeronavePassengers('');
             showToast('✅ Pasajero guardado: '+nombre);
         } else {
