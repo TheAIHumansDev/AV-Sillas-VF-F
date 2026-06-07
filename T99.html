@@ -2361,7 +2361,8 @@ function confirmOcrData(){
     // ══════════════════════════════════════════════════
     // TRAMO AERONAVE: pre-llenar modal con datos del scan
     // ══════════════════════════════════════════════════
-    if(tramoType === 'aeronave-salida'){
+    if(tramoType === 'aeronave-salida' || tramoType === 'inspeccion-sala'){
+
         cancelScan();
 
         // Pasajero
