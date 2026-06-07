@@ -1759,7 +1759,7 @@ const BP_FIELDS = [
     { key:'passengerName',  label:'👤 Nombre Completo',      placeholder:'Ej: Leandro Jose Camacho',  required:true  },
     { key:'flightNumber',   label:'✈️ # Vuelo',               placeholder:'Ej: 609',                    required:true  },
     { key:'pnr',            label:'🎫 # Reserva (PNR)',       placeholder:'Ej: C5FM0Z',                 required:true  },
-    { key:'flightDate',     label:'📅 Fecha de Vuelo',        placeholder:'Ej: 01/06/2025',             required:true  },
+    { key:'flightDate',     label:'📅 Fecha de Vuelo',        placeholder:'',                            required:true, type:'date' },
     { key:'origin',         label:'🛬 Origen',                placeholder:'Ej: SAL',                    required:true  },
     { key:'destination',    label:'🛫 Destino',               placeholder:'Ej: SJO',                    required:true  },
     { key:'boardingTime',   label:'🚪 Hora en Sala (Gate)',   placeholder:'Ej: 09:10',                  required:false },
@@ -1869,7 +1869,7 @@ FIELD LOCATIONS on an Avianca boarding pass:
 - SEAT: labeled "Asiento/Seat" (e.g. "8D")
 - ORIGIN: bottom-left, 3-letter IATA code large font (e.g. "SAL")
 - DESTINATION: bottom-center/right, 3-letter IATA code large font (e.g. "SJO")
-- FLIGHT DATE: the date shown next to origin, format like "LUN/MON, 01 JUN" or "01 JUN 2025" — extract as DD/MM/YYYY
+- flightDate: convert any format to DD/MM/YYYY. ALWAYS assume year 2026. Examples: "SAB 11 APR" → "11/04/2026", "SAT 11 APR" → "11/04/2026", "01 JUN" → "01/06/2026". Never use any other year unless explicitly printed on the pass.
 - DEPARTURE TIME: the scheduled departure time shown next to origin city (e.g. "10:10") — this is DIFFERENT from boarding time
 
 Extract ONLY these fields and return a valid JSON object. No markdown, no explanation.
@@ -2281,19 +2281,37 @@ function renderOcrResults(data){
             ? (f.key === 'flightDate' && extraHint ? `<span style="color:var(--red3);font-size:10px;font-weight:800;">✕</span>` : `<span style="color:var(--green);font-size:10px;">✓</span>`)
             : `<span style="color:var(--gold2);font-size:10px;">✎</span>`;
 
-        return `<div style="display:flex;flex-direction:column;gap:3px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;">
-                <label style="font-size:10px;font-weight:600;color:${labelColor};">${f.label}${f.required ? ' <span style="color:var(--red3)">*</span>' : ''}</label>
-                ${statusIcon}
-            </div>
-            <input
+   // Para fecha: convertir DD/MM/YYYY → YYYY-MM-DD para input[type=date]
+        let inputHtml;
+        if(f.type === 'date'){
+            const dateVal = parseDDMMYYYY(val);
+            const isoVal  = dateVal
+                ? dateVal.getFullYear()+'-'+String(dateVal.getMonth()+1).padStart(2,'0')+'-'+String(dateVal.getDate()).padStart(2,'0')
+                : '';
+            inputHtml = `<input
+                data-ocr-key="${f.key}"
+                type="date"
+                value="${isoVal}"
+                onchange="ocrDateChange(this)"
+                style="width:100%;padding:10px 13px;background:${bgColor};border:1.5px solid ${borderColor};border-radius:9px;color:#fff;font-size:13px;font-family:'Syne',sans-serif;outline:none;transition:all 0.2s;color-scheme:dark;"
+            />`;
+        } else {
+            inputHtml = `<input
                 data-ocr-key="${f.key}"
                 type="text"
                 value="${val.replace(/"/g,'&quot;')}"
                 placeholder="${f.placeholder}"
                 oninput="ocrLiveEdit(this)"
                 style="width:100%;padding:10px 13px;background:${bgColor};border:1.5px solid ${borderColor};border-radius:9px;color:#fff;font-size:13px;font-family:'Syne',sans-serif;outline:none;transition:all 0.2s;"
-            />
+            />`;
+        }
+
+        return `<div style="display:flex;flex-direction:column;gap:3px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+                <label style="font-size:10px;font-weight:600;color:${labelColor};">${f.label}${f.required ? ' <span style="color:var(--red3)">*</span>' : ''}</label>
+                ${statusIcon}
+            </div>
+            ${inputHtml}
             ${extraHint}
         </div>`;
     }).join('');
@@ -2340,6 +2358,37 @@ function ocrLiveEdit(input){
     if(!btn || _bpExpired) return;
     const requiredFilled = BP_FIELDS.filter(f=>f.required).every(f => (_ocrPending[f.key]||'').trim().length > 0);
     btn.style.opacity = requiredFilled ? '1' : '0.6';
+}
+
+    function ocrDateChange(input){
+    // Convierte YYYY-MM-DD (valor del input date) → DD/MM/YYYY (formato interno)
+    const iso = input.value; // "2026-04-11"
+    if(!iso){ _ocrPending['flightDate'] = ''; return; }
+    const [y,m,d] = iso.split('-');
+    const ddmmyyyy = d+'/'+m+'/'+y;
+    _ocrPending['flightDate'] = ddmmyyyy;
+
+    // Actualizar color del borde
+    const dateObj = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+    const today   = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    const expired = dateObj < today;
+    input.style.borderColor = expired ? 'rgba(232,0,29,0.7)' : 'rgba(0,220,130,0.4)';
+    input.style.background  = expired ? 'rgba(232,0,29,0.1)' : 'rgba(0,220,130,0.06)';
+
+    // Remover hint previo si existe
+    const existing = input.nextElementSibling;
+    if(existing && existing.dataset.expiryHint) existing.remove();
+
+    if(expired){
+        const ago  = Math.round((today - dateObj) / 86400000);
+        const hint = document.createElement('div');
+        hint.dataset.expiryHint = '1';
+        hint.style.cssText = "font-size:9px;color:var(--red3);font-family:'JetBrains Mono',monospace;margin-top:3px;font-weight:700;";
+        hint.textContent = `🚫 EXPIRADA hace ${ago} día${ago>1?'s':''} — no se puede usar esta tarjeta`;
+        input.insertAdjacentElement('afterend', hint);
+    }
+
+    runValidation(_ocrPending);
 }
 
 function confirmOcrData(){
