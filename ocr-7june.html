@@ -2028,99 +2028,35 @@ function confirmOcrData(){
     };
 
     // ══════════════════════════════════════════════════
-    // TRAMO AERONAVE: guardar directo en lista de pasajeros
+    // TRAMO AERONAVE: pre-llenar modal con datos del scan
     // ══════════════════════════════════════════════════
     if(tramoType === 'aeronave-salida'){
         const nombre = d.passengerName || '';
         const pnr    = (d.pnr || '').toUpperCase();
         const silla  = (d.seatNumber || '').toUpperCase();
 
-        if(!nombre || !pnr){
-            showToast('⚠️ Nombre o PNR no detectado — complete manualmente', 'gold');
-            // Populate modal fields as fallback
-            if(nombre) document.getElementById('modalPaxName').value = nombre;
-            if(pnr)    document.getElementById('modalPaxPNR').value  = pnr;
-            if(silla)  document.getElementById('modalPaxSilla').value = silla;
-            cancelScan();
-            openModal();
-            return;
-        }
-
         cancelScan();
 
-        // Show badge
-        document.getElementById('scanBadgeText').textContent =
-            `✅ Pasajero escaneado · ${nombre} · guardando en lista…`;
-        document.getElementById('scanBadgeRow').classList.add('show');
+        // Pre-fill modal fields
+        document.getElementById('modalPaxName').value  = nombre;
+        document.getElementById('modalPaxPNR').value   = pnr;
+        document.getElementById('modalPaxSilla').value = silla;
 
-        // Save via server using existing JSONP flow
-        setSyncStatus('syncing', 'Guardando pasajero escaneado…');
-        const cbName = 'savePaxScan' + Date.now();
-        const url = SCRIPT_URL
-            + '?action=saveAeronavePassenger'
-            + '&user='         + encodeURIComponent(currentUser.username)
-            + '&nombre='       + encodeURIComponent(nombre)
-            + '&pnr='          + encodeURIComponent(pnr)
-            + '&numeroSilla='  + encodeURIComponent(silla)
-            + '&wchType='      + encodeURIComponent('WCHR')   // default; user can change later
-            + '&hasDocs='      + encodeURIComponent('si')
-            + '&hasPacemaker=' + encodeURIComponent('no')
-            + '&canWalk='      + encodeURIComponent('si')
-            + '&callback='     + cbName;
+        // Reset selections — supervisor confirma estos
+        modalWchType = ''; modalDocs = ''; modalPace = ''; modalWalk = '';
+        ['mWCHR','mWCHS','mWCHC'].forEach(id => document.getElementById(id)?.classList.remove('selected'));
+        ['mDocsYes','mDocsNo','mPaceYes','mPaceNo','mWalkYes','mWalkNo'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.className = 'toggle-btn';
+        });
 
-        window[cbName] = function(data){
-            delete window[cbName]; document.getElementById('scanSaveScr')?.remove();
-            if(data?.success){
-                const newPax = {
-                    id: data.id,
-                    nombre, pnr,
-                    numeroSilla: silla,
-                    wchType:     'WCHR',
-                    hasDocs:     'si',
-                    hasPacemaker:'no',
-                    canWalk:     'si',
-                    usuario:     currentUser.username
-                };
-                aeronavePassengers.push(newPax);
-                setSyncStatus('ok', 'Guardado ✓ · ' + aeronavePassengers.length + ' pasajero(s)');
-                renderAeronavePassengers('');
-
-                // Auto-select the newly added passenger
-                selectAeronavePassenger(data.id);
-
-                document.getElementById('scanBadgeText').textContent =
-                    `✅ ${nombre} · PNR: ${pnr} · Silla: ${silla||'–'} · seleccionado`;
-                showToast('✅ Pasajero escaneado y seleccionado: ' + nombre);
-                checkFormReady();
-            } else {
-                setSyncStatus('error', 'Error al guardar');
-                showToast('❌ Error al guardar pasajero escaneado', 'error');
-                document.getElementById('scanBadgeRow').classList.remove('show');
-            }
-        };
-
-        const scr = document.createElement('script');
-        scr.id = 'scanSaveScr'; scr.src = url;
-        scr.onerror = () => {
-            delete window[cbName]; scr.remove();
-            setSyncStatus('error', 'Error de conexión');
-            showToast('❌ Error de conexión al guardar', 'error');
-            document.getElementById('scanBadgeRow').classList.remove('show');
-        };
-        document.body.appendChild(scr);
-        setTimeout(() => {
-            if(window[cbName]){
-                delete window[cbName];
-                setSyncStatus('error', 'Tiempo agotado');
-                showToast('⏱ Tiempo agotado — intente de nuevo', 'error');
-            }
-        }, 12000);
-
-        return; // done — don't fall through to the standard field-filling below
+        document.getElementById('modalAddPassenger').classList.add('show');
+        showToast('🎫 Datos cargados — complete WCH y verificaciones');
+        return;
     }
 
     // ══════════════════════════════════════════════════
-    // TRAMOS 1 y 2: poblar campos del formulario (comportamiento original)
+    // TRAMOS 1 y 2: poblar campos del formulario
     // ══════════════════════════════════════════════════
     if(d.airlineCode){
         const sel = document.getElementById('airlineSelect');
