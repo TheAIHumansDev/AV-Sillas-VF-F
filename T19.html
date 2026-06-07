@@ -1515,10 +1515,10 @@ function confirmDestinoFinal(){
         currentUser = JSON.parse(raw);
         document.getElementById('usernameDisplay').textContent = currentUser.username;
         document.getElementById('avatarInitial').textContent  = (currentUser.username||'?').slice(0,2).toUpperCase();
-        updateApiKeyHeaderBtn();
+updateApiKeyHeaderBtn();
         loadAeronavePassengersFromServer();
+        loadSalaPassengersFromServer();
     }catch(e){ window.location.href='index.html'; }
-})();
 
 // ════════════════════════════════════════════════════════════
 //  THREE.JS BACKGROUND
@@ -2497,18 +2497,16 @@ function selectTramo(tramo){
     document.getElementById('passengerAeronaveBlock').style.display = isTramoAeronave() ? 'block' : 'none';
     document.getElementById('passengerRelevoBlock').style.display   = isTramo2() ? 'block' : 'none';
 
-    selectedRelevoId=''; relevoPassengers=[];
+selectedSalaId=''; salaPassengers=[];
     selectedAeronaveId='';
-    document.getElementById('passengerList').innerHTML='';
-    document.getElementById('relevoDataSummary').style.display='none';
-    document.getElementById('relevoEmpty').style.display='none';
+    document.getElementById('salaPassengerList').innerHTML='<div class="aero-empty">Cargando pasajeros…</div>';
+    document.getElementById('salaSelectedSummary').style.display='none';
     document.getElementById('aeronaveSelectedSummary').style.display='none';
     document.getElementById('btnIniciarServicio').disabled=true;
+    loadSalaPassengersFromServer();
 
     if(isTramo2()) loadSalaPassengersFromServer();
-    if(isTramoAeronave()) {} // ya cargados al inicio
     checkFormReady();
-}
   
 // ════════════════════════════════════════════════════════════
 //  DESTINO TIPO (SAL / CNX)
@@ -2558,8 +2556,8 @@ function checkFormReady(){
         const pnr = document.getElementById('pnrNumber').value.trim();
         const sl  = document.getElementById('numeroSilla').value.trim();
         ready = !!(tramoType && airline && flight && origen && destino && nm && pnr && sl && wchType && hasDocs && hasPacemaker && canWalk);
-    } else if(isTramo2()){
-        ready = !!(tramoType && airline && flight && origen && destino && selectedRelevoId);
+} else if(isTramo2()){
+        ready = !!(tramoType && airline && flight && origen && destino && selectedSalaId);
     } else if(isTramoAeronave()){
         let destOk = !!destinoTipo;
         if(destinoTipo==='CNX'){
@@ -2576,9 +2574,7 @@ function checkFormReady(){
 //  FLIGHT CHANGE
 // ════════════════════════════════════════════════════════════
 function onFlightChange(){
-    if(!isTramo2()) return;
-    clearTimeout(flightSearchTimer);
-    flightSearchTimer = setTimeout(tryFetchRelevoPassengers, 800);
+    checkFormReady();
 }
 
 // ════════════════════════════════════════════════════════════
@@ -2927,8 +2923,8 @@ function submitFlightInfo(){
         if(!hasDocs)      { showToast('Indique si posee documentos','error'); return; }
         if(!hasPacemaker) { showToast('Indique si posee marcapasos','error'); return; }
         if(!canWalk)      { showToast('Indique si puede caminar','error'); return; }
-    } else if(isTramo2()){
-        if(!selectedRelevoId){ showToast('Seleccione un pasajero del relevo','error'); return; }
+   } else if(isTramo2()){
+        if(!selectedSalaId){ showToast('Seleccione un pasajero de la sala','error'); return; }
     } else if(isTramoAeronave()){
         if(!selectedAeronaveId){ showToast('Seleccione un pasajero de la lista','error'); return; }
         if(!destinoTipo){ showToast('Indique Destino SAL o Conexión','error'); return; }
@@ -3185,9 +3181,9 @@ function showCompletionScreen(){
             document.getElementById('sumCnx').textContent = conexionFlight;
         }
     }
-    if(isTramo2() && selectedRelevoId){
+if(isTramo2() && selectedSalaId){
         document.getElementById('sumRelevoRow').style.display='flex';
-        document.getElementById('sumRelevo').textContent = selectedRelevoId;
+        document.getElementById('sumRelevo').textContent = 'Pool de Sala · '+selectedSalaId;
     }
 
     const tsLabels={1:'🚀 Inicio',2:'🏁 Fin',4:'🚨 Incidente',5:'♻️ Retorno'};
@@ -3280,9 +3276,9 @@ function sendToSheet(step, item, timestamp, onDone){
         + '&conexionVuelo='+ encodeURIComponent(conexionFlight)
         + '&callback='     + cbName;
 
-    if(step===0){
+if(step===0){
         url += '&serviceType=' + encodeURIComponent(tramoType);
-        if(selectedRelevoId) url += '&relevoPassengerId='+encodeURIComponent(selectedRelevoId);
+        if(isTramo2() && selectedSalaId) url += '&salaPassengerId='+encodeURIComponent(selectedSalaId);
         if(isResume&&resumeRowId) url += '&resumeRowId='+encodeURIComponent(resumeRowId);
     }
     if(stopsJson) url += '&stopsData='+encodeURIComponent(stopsJson);
@@ -3362,6 +3358,7 @@ function newReport(){
     renderAeronavePassengers('');
     renderTimeline(); updateProgress(); scrollToTop();
     loadAeronavePassengersFromServer();
+    loadSalaPassengersFromServer();
 }
 
 // ════════════════════════════════════════════════════════════
