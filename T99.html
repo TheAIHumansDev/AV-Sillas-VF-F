@@ -2509,8 +2509,12 @@ selectedSalaId=''; salaPassengers=[];
     document.getElementById('btnIniciarServicio').disabled=true;
     loadSalaPassengersFromServer();
 
-    if(isTramo2()) loadSalaPassengersFromServer();
+if(isTramo2()) loadSalaPassengersFromServer();
     checkFormReady();
+}
+
+// ════════════════════════════════════════════════════════════
+//  DESTINO TIPO (SAL / CNX)
   
 // ════════════════════════════════════════════════════════════
 //  DESTINO TIPO (SAL / CNX)
@@ -2590,9 +2594,8 @@ function tryFetchRelevoPassengers(){
     if(!airline || !flight) return;
 
     document.getElementById('relevoLoading').style.display='flex';
-    document.getElementById('relevoEmpty').style.display='none';
-    document.getElementById('passengerList').innerHTML='';
-    document.getElementById('relevoDataSummary').style.display='none';
+   document.getElementById('salaPassengerList').innerHTML='';
+    document.getElementById('salaSelectedSummary').style.display='none';
     document.getElementById('btnIniciarServicio').disabled=true;
     selectedRelevoId='';
 
@@ -3312,9 +3315,8 @@ function newReport(){
     ['tramoCounter','tramoSala','tramoAeronave'].forEach(id=>{ document.getElementById(id)?.classList.remove('selected'); });
     ['destinoSAL','destinoCNX'].forEach(id=>{ const el=document.getElementById(id); if(el) el.className='destino-btn'; });
     document.getElementById('conexionFlightBlock')?.classList.remove('show');
-    document.getElementById('passengerList').innerHTML='';
-    document.getElementById('relevoDataSummary').style.display='none';
-    document.getElementById('relevoEmpty').style.display='none';
+document.getElementById('salaPassengerList').innerHTML='';
+    document.getElementById('salaSelectedSummary').style.display='none';
     document.getElementById('aeronaveSelectedSummary').style.display='none';
     document.getElementById('passengerManualBlock').style.display='none';
     document.getElementById('passengerAeronaveBlock').style.display='none';
