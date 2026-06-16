@@ -39,6 +39,21 @@
             pointer-events: none;
         }
 
+        /* ── BACK BUTTON ── */
+        .btn-back {
+            position: absolute; top: 18px; left: 18px;
+            display: flex; align-items: center; gap: 6px;
+            padding: 6px 14px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 20px; font-size: 12px; font-weight: 700;
+            cursor: pointer; color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.2s; letter-spacing: 0.5px;
+            text-decoration: none; z-index: 10;
+        }
+        .btn-back:active { background: rgba(16,185,129,0.1); color: var(--green); border-color: var(--green); }
+
         /* ── LANG TOGGLE ── */
         .lang-toggle {
             position: absolute; top: 18px; right: 18px;
@@ -154,6 +169,9 @@
 </head>
 <body>
 
+    <!-- Back button -->
+    <a class="btn-back" id="btnBack" href="HT.html">← <span id="backLabel">Inicio</span></a>
+
     <!-- Language toggle -->
     <div class="lang-toggle">
         <button class="lang-btn active" id="btnEs" onclick="setLang('es')">ES</button>
@@ -206,11 +224,13 @@
             headline:   'Comparte tu <span class="accent">experiencia</span>',
             subline:    'Escanea el código QR y cuéntanos cómo fue tu experiencia con nuestro servicio de asistencia en silla de ruedas. Tu opinión nos ayuda a mejorar.',
             instrText:  '<strong>Abre la cámara de tu celular</strong> y apúntala al código. El formulario se abrirá automáticamente.',
+            backLabel:  'Inicio',
         },
         en: {
             headline:   'Share your <span class="accent">experience</span>',
             subline:    'Scan the QR code and tell us about your experience with our wheelchair assistance service. Your feedback helps us improve.',
             instrText:  '<strong>Open your phone camera</strong> and point it at the code. The form will open automatically.',
+            backLabel:  'Home',
         }
     };
 
@@ -222,6 +242,7 @@
         document.getElementById('headline').innerHTML   = t.headline;
         document.getElementById('subline').innerHTML    = t.subline;
         document.getElementById('instrText').innerHTML  = t.instrText;
+        document.getElementById('backLabel').textContent = t.backLabel;
         document.getElementById('btnEs').classList.toggle('active', lang === 'es');
         document.getElementById('btnEn').classList.toggle('active', lang === 'en');
         document.documentElement.lang = lang;
