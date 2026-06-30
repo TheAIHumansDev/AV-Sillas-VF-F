@@ -839,6 +839,20 @@ if (elPending) elPending.textContent = pending;
 if (elToday)   elToday.textContent   = todayCount;
         }
 
+       function checkDuplicates() {
+    const banner = document.getElementById('duplicateBanner');
+    const msg    = document.getElementById('duplicateMsg');
+    if (!banner || !msg) return;
+
+    const pendientes = allReports.filter(r => r.estado && r.estado !== 'Completado');
+
+    if (pendientes.length > 1) {
+        msg.textContent = `Tienes ${pendientes.length} reportes sin completar activos.`;
+        banner.classList.add('visible');
+    } else {
+        banner.classList.remove('visible');
+    }
+} 
 
         function toggleCard(el) {
             // Evitar que el click en el botón "Retomar" expanda/contraiga la card
